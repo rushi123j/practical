@@ -1,0 +1,106 @@
+A]
+
+
+
+hive
+
+create database abc;
+
+use abc;
+
+create table abc(roll int, name varchar(20));
+
+alter table abc rename to std;
+
+alter table std add columns(department varchar(20), class varchar(20));
+
+desc std;
+
+drop table std;
+
+
+
+
+B]
+
+
+
+create table A_flight(fno int, year int, destination varchar(20),delay float)
+	row format delimited
+	fields terminated by ','
+	lines terminated by '\n'
+	stored as textfile;
+
+insert into flight values(123,2009,"mumbai",30.6),(124,2010,"Nashik",50.6);
+
+select * from flight;
+
+
+
+C]
+
+
+
+	GO TO NEW TERMINAL
+
+gedit data.txt
+
+	WRITE IN THAT FILE....
+
+1,2022,pune,30.3
+
+2,2023,Mumbai,90.5
+
+3,2024,nashik,45.4
+
+4,2025.pune,67.0
+
+
+	SAVE THAT FILE, SHOW TEXT USING CAT COMMAND AND GO TO OLD TRMINAL
+
+
+load data local inpath "data.txt"
+	overwrite into table A_flight;
+
+select * from a_flight;
+
+create table B_flight(fno int, year int, source varchar(20))
+		row format delimited
+		fields terminated by ','
+		lines terminated by '\n'
+		stored as textfile;
+
+insert into table B_flight(1,2022,"mumbai"),(2,202,"delhi");
+
+select * from B_flight;
+
+select a.fno, a.year, a.dest, a.delay, b.src       
+		from A_flight a 
+		join B_flight b
+		on (a.fno=b.fno);
+
+
+
+D]
+
+
+
+create index flight_index
+	on table A_flight(fno)
+	as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+	with deferred rebuild;	
+
+show tables;	
+
+
+
+
+
+
+
+
+
+
+
+
+

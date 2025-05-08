@@ -1,0 +1,47 @@
+-- a. Creating a Database
+CREATE DATABASE IF NOT EXISTS flight_info_system;
+
+-- b. Creating an external Hive table
+CREATE EXTERNAL TABLE IF NOT EXISTS flight_info_system.flights (
+    flight_id INT,
+    flight_number STRING,
+    departure_time TIMESTAMP,
+    arrival_time TIMESTAMP,
+    origin STRING,
+    destination STRING,
+    PRIMARY KEY (flight_id)
+)
+row format delimited
+	fields terminated by ','
+	lines terminated by '\n'
+	stored as textfile;
+
+-- c. Load table with data
+LOAD DATA LOCAL INPATH '/path/to/flights.csv' INTO TABLE flight_info_system.flights;
+
+-- c. Insert new values and field in the table
+INSERT INTO flight_info_system.flights (flight_id, flight_number, departure_time, arrival_time, origin, destination)
+VALUES (1001, 'ABC123', '2024-05-09 08:00:00', '2024-05-09 10:00:00', 'JFK', 'LAX');
+
+-- c. Join tables with Hive
+CREATE TABLE IF NOT EXISTS flight_info_system.passengers (
+    passenger_id INT,
+    name STRING,
+    flight_id INT,
+    PRIMARY KEY (passenger_id)
+)
+row format delimited
+	fields terminated by ','
+	lines terminated by '\n'
+	stored as textfile;
+
+INSERT INTO flight_info_system.passengers (passenger_id, name, flight_id)
+VALUES (1, 'John Doe', 1001);
+
+SELECT f.flight_number, f.departure_time, f.arrival_time, p.name
+FROM flight_info_system.flights f
+JOIN flight_info_system.passengers p ON f.flight_id = p.flight_id;
+
+-- d. Create index on Flight Information Table
+CREATE INDEX idx_flight_number ON TABLE flight_info_system.flights (flight_number) AS 'COMPACT' WITH DEFERRED REBUILD;
+ALTER INDEX idx_flight_number ON flight_info_system.flights REBUILD;

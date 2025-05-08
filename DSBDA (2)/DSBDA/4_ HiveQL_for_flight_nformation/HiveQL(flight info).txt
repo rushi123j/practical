@@ -1,0 +1,85 @@
+On Cloudera.....
+
+1. hive
+2. create database dsbda;
+3. use dsbda;
+
+//create table
+4. create table flight(flightNo int, year int, destination varchar(20),delay float);
+
+//alter table
+5. alter table flight rename to air_flight;
+6. alter table air_flight add columns(source varchar(20));
+
+//drop table
+7. drop table flight;
+
+//show table
+8. desc air_flight;
+
+9. create table flight(fno int, year int, dest varchar(20),delay float)
+	row format delimited
+	fields terminated by ','
+	lines terminated by '\n'
+	stored as textfile;
+
+(attributes are stored in textfile and separated by , and row)
+
+
+9. insert into flight values(123,2009,"mumbai",30.6);
+10. insert into flight values(124,2010,"Nashik",50.6);
+11. select * from flight;
+
+//create external hive table
+open new terminal
+
+1. gedit f.txt
+write in that.....
+1,2015,new Mumbai,30.3
+2,2016,pune,90.5
+3,2015,nashik,45.4
+4,2017.pune,67.0
+
+save file and check file is created or not by ls commands
+GO to first terminal
+
+12. load data local inpath "f.txt"
+	overwrite into table flight;
+
+13. select * from flight;
+
+//Join table
+
+14. create table nflight(fno int, year int, source varchar(20))
+		row format delimited
+		fields terminated by ','
+		lines terminated by '\n'
+		stored as textfile;
+
+15. select * from flight;
+16. insert into table nflight(1,2015,"pune");
+
+17. select a.fno, a.year, a.dest, a.delay, b.src       
+		from flight a join nflight b
+		on(a.fno=b.fno);
+
+//Indexing
+
+18. create index flight_index on table flight(fno)
+	as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+	WITH DEFERRED REBUILD;
+
+19.show tables;	
+
+
+
+
+
+
+
+
+
+
+
+
+
